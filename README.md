@@ -1,5 +1,7 @@
 # GGNExperiments
-Experiments with Generalised Gauss Newton for NGD and LLA
+Experiments with Generalised Gauss Newton for NGD and LLA.
+
+The GGN as an approximation to the Hessian is used (i) as a conditioner for the gradient in SGD during training, to produce NGD; (ii) as a way to recover the posterior distribution on the parameters of the model after training. In both cases, there are assumptions about linearity being made. 
 
 ---
 
