@@ -19,4 +19,4 @@ In this example, the GGN is used to condition the gradient for NGD and the desce
 
 ---
 
-For more general _non-linear_ functions of $b_n(\theta)$, such as might be found for a neural network, e.g. $b_n(\theta) = \theta_1 RELU \theta_2 x_n$, the GGN is only the Hessian of the linearised function. This can be obtained using a Taylor approximation, as $b_n^{lin}(\theta, \theta') = b_n(\theta) + J_{\theta} b_n(\theta) (\theta' - \theta)$.
+For more general _non-linear_ functions of $b_n(\theta)$, such as might be found for a neural network, e.g. $b_n(\theta) = \theta_1 RELU (\theta_2 x_n)$, the GGN is only the Hessian of the linearised function. This can be obtained using a Taylor approximation, as $b_n^{lin}(\theta, \theta') = b_n(\theta) + J_{\theta} b_n(\theta) (\theta' - \theta)$.
