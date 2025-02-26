@@ -8,6 +8,8 @@ $$
 
 which is the Hessian of the data. 
 
+
+
 ### Analytic
 
 In the code for [Kunstner+ 2019]() the Hessian of the data is calculated using the analytic form of the Jacobian, because the data model is defined as $f(x) = \theta_1 x + \theta_2$.
@@ -78,6 +80,15 @@ The `functorch` functions have now been absorbed into `torch.func` and it is pos
 		J = self.J_theta_f(theta)
 		return torch.matmul(J.T, J) / (self.noise_var * self.N)
 ```
+
+### Timing
+
+Because of the loop in the `torch` approach it's much slower than the other methods. The analytic method is fastest, but requires the analytic solution to a specific model to be hard coded.
+
+|            |  Analytic | torch  | torch.func |
+| :---:      |  :---:    | :---:  | :---:      |
+| time [sec] |  8.2e-6   | 6.1e-2 |  2.1e-3    |
+
 
 ---
 
