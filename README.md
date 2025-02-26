@@ -1,6 +1,15 @@
 # GGNExperiments
 Experiments with Generalised Gauss Newton for NGD and LLA.
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+![Python](https://img.shields.io/badge/python-v3.11+-blue.svg)
+[![Build Status](https://travis-ci.org/as595/GGNExperiments.svg?branch=master)](https://travis-ci.org/as595/GGNExperiments)
+![Dependencies](https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg)
+[![GitHub Issues](https://img.shields.io/github/issues/as595/GGNExperiments.svg)](https://github.com/as595/GGNExperiments/issues)
+![Contributions welcome](https://img.shields.io/badge/contributions-private-orange.svg)
+[![License](https://img.shields.io/cran/l/devtools.svg)](https://opensource.org/licenses/gpl-license)
+[![HitCount](http://hits.dwyl.io/as595/GGNExperiments.svg)](http://hits.dwyl.io/as595/GGNExperiments)
+
 The GGN as an approximation to the Hessian is used (i) as a conditioner for the gradient in SGD during training, to produce NGD; (ii) as a way to recover the posterior distribution on the parameters of the model after training. In both cases, there are assumptions about linearity being made. 
 
 ---
