@@ -94,8 +94,7 @@ class LinearModel(nn.Module):
             """
 		
             self.output_layer = nn.Linear(1, 1)
-            self.loss = nn.MSELoss(reduction='none')
-		
+            
     def forward(self, x, y=None, op='forward'):
         if op=='forward':
             return self.output_layer(x)
