@@ -2,6 +2,7 @@ import numpy as np
 import pylab as pl
 import scipy as sp
 from tqdm import tqdm
+import time
 
 from problems import *
 from plotting import *
@@ -15,8 +16,8 @@ def conj_grad(problem):
 
 	n_it = 2
 	for i in range(n_it):
-		H = problem._hessian(theta)
-		g = problem._g(theta)
+		H = problem._hessian(theta).detach()
+		g = problem._g(theta).detach()
 		dif, info = sp.sparse.linalg.cg(H.numpy(),g.numpy()) # no torch alternative...
 		assert(info == 0)
 		theta-= torch.from_numpy(dif.reshape((problem.D,1)))
@@ -54,39 +55,42 @@ def run_chain(vectorFuncs, startingPoints, n_it=50000, step=0.001):
 
 if __name__ == "__main__":
 
+	# set seed:
+	torch.manual_seed(42)
+
 	# generate some data:
 	N = 1000
-	X, y = gradient_field_problem(N)
+	X, y = linear_model(N, theta=[2.,2.], noise_var=1.0)
 
 	# define the kind of problem you want to solve:
-	problem = linear_regression(X,y)
+	model = LinearModel()
+	problem = linear_regression(X,y,model,prior_var=0.1,noise_var=1.0)
 
 	# get a solution using conj. gradient:
 	theta_0, _ = conj_grad(problem) 
 	problem.theta_0 = theta_0
-#	print(problem.g_prior(theta_0))
-#	stop
 
 	# create different vector functions to map the gradient landscape:
 	gammas = [1 / 3, 1, 3] 
 	def vec_funcs(gammas, problem):
 		return [
-			lambda t: - gammas[0] * problem._g(t).numpy(),
-			lambda t: - gammas[1] * sp.linalg.solve(problem._hessian(t).numpy() + (1e-8) * np.eye(2), problem._g(t).numpy()),
-			lambda t: - gammas[2] * sp.linalg.solve(problem._ef(t).numpy() + (1e-8) * np.eye(2), problem._g(t).numpy()),
+			lambda t: - gammas[0] * problem._g(t).detach().numpy(),
+			lambda t: - gammas[1] * sp.linalg.solve(problem._hessian(t).detach().numpy() + (1e-8) * np.eye(2), problem._g(t).detach().numpy()),
+			lambda t: - gammas[2] * sp.linalg.solve(problem._ef(t).detach().numpy() + (1e-8) * np.eye(2), problem._g(t).detach().numpy()),
 		]
 
+	# (x,y) swapped w.r.t original code because of param order:
 	starts = [
-			  np.array([2, 4.5]).reshape((-1, 1)),
-			  np.array([1, 0]).reshape((-1, 1)),
-			  np.array([4.5, 3]).reshape((-1, 1)),
-			  np.array([-0.5, 3]).reshape((-1, 1)),
+			  np.array([4.5, 2.]).reshape((-1, 1)),
+			  np.array([0, 1]).reshape((-1, 1)),
+			  np.array([3, 4.5]).reshape((-1, 1)),
+			  np.array([3, -0.5]).reshape((-1, 1)),
 		]
 
 	# use the differently conditioned gradients for gradient descent:
 	chains = run_chain(vec_funcs(gammas, problem), starts)
 
 	# visualise the results:
-	plot(X,y,problem,vec_funcs(gammas, problem), starts, chains)
+	plot(X.detach(),y.detach(),problem,vec_funcs(gammas, problem), starts, chains)
 	pl.savefig("vecfield.png")
 	pl.show()

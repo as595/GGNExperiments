@@ -30,13 +30,13 @@ def make_fig_env():
 
 def plot_dataset(ax, problem, X, y):
 
-    ax.plot(X[:, 1], y, '.', markersize=3, alpha=0.4, color='r', label='input data')
+    ax.plot(X, y, '.', markersize=3, alpha=0.4, color='r', label='input data')
 
     ax.set_xlim([0, 10])
     ax.set_ylim([0, 20])
 
     xs = np.linspace(0, 9, 100)
-    theta_0 = problem.theta_0.numpy()
+    theta_0 = problem.theta_0.detach().numpy()
     ax.plot(xs, xs * theta_0[1] + theta_0[0], '--', label=r"$y = \theta x + b$", linewidth=1, color="k")
 
     ax.set_xlim([-1, 10])
@@ -105,8 +105,8 @@ def plot(X, y, problem, vec_funcs, starts, chains):
         for j, vecfunc in enumerate(vec_funcs):
             plot_gradientDescent(axes[1 + j], chains[i][j], optNames[j], optColours[j])
 
-    axes[0].set_xlabel("x", labelpad=LABELPAD_DIFF)
-    axes[0].set_ylabel("y", labelpad=LABELPAD_DIFF)
+    axes[0].set_xlabel("x", labelpad=0.5*LABELPAD_DIFF)
+    axes[0].set_ylabel("y", labelpad=0.5*LABELPAD_DIFF)
     axes[0].set_xticks([0, 10])
     axes[0].set_yticks([0, 20])
 

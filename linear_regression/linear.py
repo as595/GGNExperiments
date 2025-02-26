@@ -1,29 +1,76 @@
 import numpy as np
 
 import torch
+import torch.nn as nn
 from torch.distributions import Normal
+from torch.nn.utils import parameters_to_vector, vector_to_parameters
 
+from torch.func import grad, jacrev, functional_call
 
 class linear_regression():
 
-	def __init__(self, X, y, prior_var=0.1, noise=1):
+	def __init__(self, X, y, model, prior_var=0.1, noise_var=1):
 
 
 		assert(len(X.size()) == 2)
 
 		self.X = X
 		self.y = y.reshape(X.size(0),1)
-		self.N = X.size(0)			# no. of data samples
-		self.D = X.size(1)			# no. of parameters
-		self.prior_var = prior_var 	# prior variance
-		self.noise = noise  		# data noise variance
-
+		self.N = X.size(0)					# no. of data samples
+		self.D = len(parameters_to_vector(model.parameters()).detach())	# no. of parameters 
+		self.prior_var = prior_var 			# prior variance
+		self.noise_var = noise_var  		# data noise variance
+		self.model = model					# model
 
 	def _loss(self, theta):
-		f = torch.matmul(self.X, theta)
-		nll = -1.*Normal(self.y, self.noise).log_prob(f).mean(0)
+		_theta = theta.reshape(-1,1)
+		vector_to_parameters(_theta, self.model.parameters())
+		f = self.model(self.X)
+		nll = -1.*Normal(self.y, self.noise_var).log_prob(f).mean(0)
 		return nll
 
+	def J_theta_f(self, theta):
+
+		"""
+		using torch.func
+		"""
+
+		_theta = theta.reshape(-1,1)
+		vector_to_parameters(_theta, self.model.parameters())
+		
+		self.model.zero_grad()
+		params = dict(self.model.named_parameters())
+
+		res = jacrev(functional_call, argnums=1)(self.model, params, (self.X,)) # returns dict
+		J = torch.zeros([self.X.size(0), len(params.keys())])
+
+		for i in range(len(params.keys())):
+			key = list(params.keys())[i]
+			J[:,i] = res[key].squeeze()
+		
+		return J
+
+	def J_theta_L(self, theta):
+
+		"""
+		using torch.func
+
+		"""
+
+		_theta = theta.reshape(-1,1)
+		vector_to_parameters(_theta, self.model.parameters())
+
+		self.model.zero_grad()
+		params = dict(self.model.named_parameters())
+		
+		res = jacrev(functional_call, argnums=1)(self.model, params, (self.X, self.y, 'loss')) # returns dict
+		J = torch.zeros([self.X.size(0), len(params.keys())])
+		for i in range(len(params.keys())):
+			key = list(params.keys())[i]
+			J[:,i] = res[key].squeeze()
+
+		# MSE loss doesn't include 1/2\sigma^2 factor in NLL
+		return J/(2.*self.noise_var)
 
 	def g_prior(self, theta):
 		"""
@@ -32,20 +79,8 @@ class linear_regression():
 		"""
 		return theta.reshape(-1,) / (self.prior_var  * self.N)
 
-
 	def grads(self, theta):
-
-		"""
-		numerical solution to grad loss:
-		dL/dtheta = dL/df . df/dtheta = (f-y)/sigma^2 . x
-		assumes gaussianity
-		"""
-		_theta = theta.reshape(-1,1)
-		f = torch.matmul(self.X, _theta)
-		diff = f - self.y 
-		J = (self.X*diff) / self.noise
-		return J
-
+		return self.J_theta_L(theta)
 
 	def _g(self, theta):
 		"""
@@ -57,17 +92,9 @@ class linear_regression():
 		J = self.grads(theta) 
 		return torch.matmul(J.T, J) / self.N
 
-
 	def hess_data(self, theta):
-		"""
-		Eq 29 in Kunstner
-		J = df/dtheta = x
-		where 
-		f = theta_1.x +theta_2
-		why is this divided by the noise? just to whiten the data?
-		"""
-		return torch.matmul(self.X.T, self.X) / (self.noise * self.N)
-
+		J = self.J_theta_f(theta)
+		return torch.matmul(J.T, J) / (self.noise_var * self.N)
 
 	def hess_prior(self):
 		return torch.eye(self.D) / (self.prior_var * self.N)
