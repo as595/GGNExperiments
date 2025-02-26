@@ -1,6 +1,6 @@
 ## Hessian & Jacobian calculations
 
-For a Gaussian likelihood, the Hessian of the log-likelihood w.r.t the model is unity, i.e. $\nabla_f^2 \, \log \mathcal{L} = 1$. So in this case, the GGN matrix, $J^T H J$, is just given by:
+For a Gaussian likelihood, the Hessian of the log-likelihood w.r.t the model is unity, i.e. $\nabla_f^2 ~ \log \mathcal{L} = 1$. So in this case, the GGN matrix, $J^T H J$, is just given by:
 
 $$
 GGN = \sum_n (J_{\theta} f(x_n, \theta))^T (J_{\theta} f(x_n, \theta)),
