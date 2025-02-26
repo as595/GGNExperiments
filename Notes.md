@@ -78,3 +78,53 @@ The `functorch` functions have now been absorbed into `torch.func` and it is pos
 		J = self.J_theta_f(theta)
 		return torch.matmul(J.T, J) / (self.noise_var * self.N)
 ```
+
+---
+
+### Jacobian of the loss w.r.t model parameters
+
+I'm sure there must be a better way than this, but in order to use `model.named_parameters()` I had to adapt the model class like this:
+
+```python
+class LinearModel(nn.Module):
+    def __init__(self, **kwargs):
+        super(LinearModel, self).__init__()
+            """
+            f(x) = w_1 x + b_1
+            """
+		
+            self.output_layer = nn.Linear(1, 1)
+            self.loss = nn.MSELoss(reduction='none')
+		
+    def forward(self, x, y=None, op='forward'):
+        if op=='forward':
+            return self.output_layer(x)
+        elif op=='loss': # needed for fast jacobian calc.
+            y_tilde = self.output_layer(x)
+            return torch.nn.functional.mse_loss(y_tilde, y, reduction='none')
+```
+
+Then the calculation of the Jacobian is similar to before:
+
+```python
+def J_theta_L(self, theta):
+
+    """
+        using torch.func
+    """
+
+    _theta = theta.reshape(-1,1)
+    vector_to_parameters(_theta, self.model.parameters())
+
+    self.model.zero_grad()
+    params = dict(self.model.named_parameters())
+		
+    res = jacrev(functional_call, argnums=1)(self.model, params, (self.X, self.y, 'loss')) # returns dict
+    J = torch.zeros([self.X.size(0), len(params.keys())])
+    for i in range(len(params.keys())):
+        key = list(params.keys())[i]
+        J[:,i] = res[key].squeeze()
+
+    # MSE loss doesn't include 1/2\sigma^2 factor in NLL
+    return J/(2.*self.noise_var)
+```
