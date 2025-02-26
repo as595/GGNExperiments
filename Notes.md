@@ -1,6 +1,6 @@
 ## Hessian & Jacobian calculations
 
-#### Analytic
+### Analytic
 
 In the code for [Kunstner+ 2019]() the Hessian of the data is calculated using the analytic form of the Jacobian, because the data model is defined as $f(x) = \theta_1 x + \theta_2$.
 
@@ -14,7 +14,7 @@ def hess_data(self, theta):
     return torch.matmul(self.X.T, self.X) / (self.noise_var * self.N)
 ```
 
-#### torch
+### torch
 
 In the case where the model is not explicitly defined as a function, but is instead specified by a pytorch model (which could just be `torch.nn.Linear(1, 1)`), the same thing is calculated using:
 
@@ -44,7 +44,7 @@ def hess_data(self, theta):
 
 The loop here is required because the `.backward()` step that calculates the gradients accumulates them for the parameters in the model. Even if you use `out.backward(torch.ones_like(self.X))` to get a vector output, the gradients on the model parameters will still be accumulated and give you a single value. 
 
-#### torch.func
+### torch.func
 
 The `functorch` functions have now been absorbed into `torch.func` and it is possible to extract the Jacobian using vector mapping:
 
