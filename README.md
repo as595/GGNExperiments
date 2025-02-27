@@ -28,4 +28,15 @@ python main.py
 
 ---
 
+The GGN can also be used to recover a Laplace approximation to the posterior distribution on the model parameters directly:
+
+$$
+q(w | \mathcal{D}) = \mathcal{N}(w | \hat{w}, (GGN_{\hat{w}} + \alpha I)^{-1}), 
+$$
+
+where the prior on the model parameters is defined as $p(w) = \mathcal{N}(0, \alpha^{-1} I)$.
+
+---
+### Extension to non-linear models
+
 For more general _non-linear_ functions of $f_n(\theta)$, such as might be found for a neural network, e.g. $f_n(\theta) = \theta_1 RELU (\theta_2 x_n)$, the GGN is only the Hessian of the linearised function. This can be obtained using a Taylor approximation, as $f_n^{lin}(\theta, \theta') = f_n(\theta) + J_{\theta} f_n(\theta) (\theta' - \theta)$.
