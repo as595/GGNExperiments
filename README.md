@@ -35,10 +35,10 @@ python main.py
 The GGN can also be used to recover a Laplace approximation to the posterior distribution on the model parameters directly:
 
 $$
-q(w | \mathcal{D}) = \mathcal{N}(w | \hat{w}, (GGN_{\hat{w}} + \alpha I)^{-1}), 
+q(\theta | \mathcal{D}) = \mathcal{N}(\theta | \hat{\theta}, (GGN_{\hat{\theta}} + \alpha I)^{-1}), 
 $$
 
-where the prior on the model parameters is defined as $p(w) = \mathcal{N}(0, \alpha^{-1} I)$.
+where the prior on the model parameters is defined as $p(\theta) = \mathcal{N}(0, \alpha^{-1} I)$.
 
 For a linear relationship between the parameters, the Laplace approximation will give a reliable approximation to the posterior distribution, but in other cases it is expected to underfit. [Roy+ 2025](https://arxiv.org/pdf/2406.03334) explain this through decomposing the contributions of the approximation into those that represent *reparameterisations* of the function (kernel) and those that represent *functional changes* (non-kernel). For the linear model above these look like this:
 
