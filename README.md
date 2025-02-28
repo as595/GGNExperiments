@@ -44,6 +44,8 @@ For a linear relationship between the parameters, the Laplace approximation will
 
 ![alt text](./posterior_approx/kernel.png)
 
+*(this is just a toy demo as an intrinsically linear model is perfectly characterised... but it will be the basis for the linearised model later)*
+
 The code to reproduce this experient is in [posterior_approx](./posterior_approx/). To run:
 
 ```
