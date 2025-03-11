@@ -59,3 +59,9 @@ For more general _non-linear_ functions of $f_n(\theta)$, such as might be found
 In this case, the NGD doesn't work quite as well, but it's still significantly better than straight forward gradient descent. Note the asymmetry of the gradient field and the loss plateau on the LHS of the phase space due to the RELU:
 
 ![alt text](./non_linear/vecfield_nl.png)
+
+In this case, the Laplace approximation doesn't represent the covariance well at all:
+
+![alt text](./non_linear/kernel.png)
+
+This is the *sampled Laplace* situation from [Roy+ 2025](https://arxiv.org/pdf/2406.03334), equivalent to their Figure~1 (centre).
