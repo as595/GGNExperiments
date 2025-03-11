@@ -64,4 +64,7 @@ In this case, the Laplace approximation doesn't represent the covariance well at
 
 ![alt text](./non_linear/kernel.png)
 
+However if we linearize the functional predictive, i.e. $f_n^{lin}(\theta, \theta') = f_n(\theta) + J_{\theta} f_n(\theta) (\theta' - \theta)$, then we recover something like this:
+
+![alt text](./non_linear/kernel_linear.png)
 
