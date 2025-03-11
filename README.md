@@ -6,10 +6,10 @@ The GGN as an approximation to the Hessian is used (i) as a conditioner for the 
 
 ---
 
-The GGN is often used as a first approximation to the Hessian, where:
+The GGN is often used as a first order approximation to the Hessian, where:
 
 $$
-GNN =  \sum_n (J_{\theta} f_n(\theta))^T \nabla_f^2 a_n(f_n(\theta)) J_{\theta} f_n(\theta) 
+GGN =  \sum_n (J_{\theta} f_n(\theta))^T \nabla_f^2 a_n(f_n(\theta)) J_{\theta} f_n(\theta) 
 $$
 
 where $a_n(f_n(\theta))$ is the negative log likelihood or cost function $-\log \mathcal{L} = -\log p(y_n | f_n(\theta))$, which is a function of the model output $f_n(\theta)$. 
