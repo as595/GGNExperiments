@@ -60,8 +60,8 @@ In this case, the NGD doesn't work quite as well, but it's still significantly b
 
 ![alt text](./non_linear/vecfield_nl.png)
 
-In this case, the Laplace approximation doesn't represent the covariance well at all:
+In this case, the Laplace approximation doesn't represent the covariance well at all. This is the *sampled Laplace* situation from [Roy+ 2025](https://arxiv.org/pdf/2406.03334), equivalent to their Figure~1 (centre).
 
 ![alt text](./non_linear/kernel.png)
 
-This is the *sampled Laplace* situation from [Roy+ 2025](https://arxiv.org/pdf/2406.03334), equivalent to their Figure~1 (centre).
+
