@@ -52,7 +52,7 @@ The code to reproduce this experient is in [posterior_approx](./posterior_approx
 python main.py
 ```
 ---
-### Extension to non-linear models - under construction
+### Extension to non-linear models - code not finalised
 
 For more general _non-linear_ functions of $f_n(\theta)$, such as might be found for a neural network, e.g. $f_n(\theta) = \theta_2 RELU (\theta_1 x_n)$, the GGN is only the Hessian of the linearised function. The linearised function can be obtained using a Taylor approximation, as $f_n^{lin}(\theta, \theta') = f_n(\theta) + J_{\theta} f_n(\theta) (\theta' - \theta)$.
 
@@ -67,3 +67,6 @@ In this case, the Laplace approximation doesn't represent the covariance well at
 However if we linearize the functional predictive, i.e. $f_n^{lin}(\theta, \theta') = f_n(\theta) + J_{\theta} f_n(\theta) (\theta' - \theta)$, then we recover something like this:
 
 ![alt text](./non_linear/kernel_linear.png)
+
+---
+### Diffusion sampling - under construction
